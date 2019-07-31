@@ -9,19 +9,17 @@ import torchvision.transforms as transforms
 
 
 def get_model():
-    checkpoint_path = 'flower_classifier_2.pth'
+    checkpoint_path = 'flower_classifier_small_2.pth'
     checkpoint = torch.load(checkpoint_path,map_location='cpu')
-    if(checkpoint['arch'] == 'densenet161'):
-        model = models.densenet161(pretrained=True)
+    if(checkpoint['arch'] == 'densenet121'):
+        model = models.densenet121(pretrained=True)
     for param in model.parameters():
         param.requires_grad = False  
     model.class_to_idx = checkpoint['class_to_idx']
     classifier = nn.Sequential(OrderedDict([
-                          ('fc1', nn.Linear(2208, 1024)),
+                          ('fc1', nn.Linear(1024, 512)),
                           ('relu', nn.ReLU()),
-                          ('fc2', nn.Linear(1024, 512)),
-                          ('relu', nn.ReLU()),
-                          ('fc3', nn.Linear(512, 102)),
+                          ('fc2', nn.Linear(512, 102)),
                           ('output', nn.LogSoftmax(dim=1))
                           ]))
     model.classifier = classifier
